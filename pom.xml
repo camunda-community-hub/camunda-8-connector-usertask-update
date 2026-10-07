@@ -35,8 +35,8 @@
 
 
         <!-- connector SDK version -->
-        <!-- connector SDK version 8.8.7 / 8.7.8 -->
-        <version.connector>8.8.7</version.connector>
+        <!-- connector SDK version 8.9.14 / 8.7.8 -->
+        <version.connector>8.9.14</version.connector>
 
         <version.spring-boot>3.4.4</version.spring-boot>
 
@@ -146,7 +146,7 @@
             <dependency>
                 <groupId>io.camunda</groupId>
                 <artifactId>camunda-bom</artifactId>
-                <version>8.8.0</version>
+                <version>8.9.23</version>
                 <scope>import</scope>
             </dependency>
         </dependencies>
@@ -325,11 +325,12 @@
     </pluginRepositories>
 
     <profiles>
-        <!-- This project has no .github/workflows release pipeline today, so this profile is never
-             activated automatically. It's added anyway so that if/when a release pipeline is added
-             using the standard community-action-maven-release action (its default release-profile
-             id - see involvedusers' deploy.yml for the working reference), the with-dependencies
-             shade execution is already correctly scoped out of the Central release from day one. -->
+        <!-- Activated by the community-action-maven-release GitHub Action during a release. It must
+             keep attach-sources/attach-javadocs enabled (inherited from community-hub-release-parent)
+             since Sonatype's Central Portal now rejects a deployment that doesn't include a
+             -sources.jar and a -javadoc.jar. Only the with-dependencies shade execution is scoped out
+             here: Central must receive the plain jar as the main artifact, not the fat jar (see
+             involvedusers' deploy.yml for the working reference). -->
         <profile>
             <id>community-action-maven-release</id>
             <build>
@@ -340,26 +341,6 @@
                         <executions>
                             <execution>
                                 <id>with-dependencies</id>
-                                <phase>none</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>none</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
                                 <phase>none</phase>
                             </execution>
                         </executions>
