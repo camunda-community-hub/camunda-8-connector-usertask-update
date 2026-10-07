@@ -2,6 +2,7 @@ name: Deploy artifacts on Nexus
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   publish:
