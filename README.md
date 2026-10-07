@@ -202,3 +202,17 @@ Build the project with `mvn package`. Two JARs are produced:
   all dependencies (use this for a standalone deployment)
 
 This connector needs a `CamundaClient` to search and update user tasks, so it must run as a Spring bean of the connector runtime (`spring-boot-starter-camunda-connectors`), not as a bare SPI connector — the runtime autowires the `CamundaClient` bean into it.
+
+### Integrated in your application
+
+If you already have an application with its own worker/connector runtime — i.e. it already depends on `spring-boot-starter-camunda-connectors` and has a `CamundaClient` bean configured — you can integrate this connector directly as a Maven dependency instead of deploying a separate JAR. Just add it to your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>org.camunda.connector</groupId>
+    <artifactId>connector-usertask-update</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+Spring Boot's component scanning won't automatically pick up `UserTaskUpdateFunction` just because the JAR is on the classpath — it's wired in via a Spring Boot auto-configuration (`UserTaskUpdateFunctionAutoConfiguration`, declared in `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`), which Spring Boot's `@EnableAutoConfiguration` discovers automatically on any `@SpringBootApplication`. So once the dependency is on your classpath, the connector is registered and starts polling for `c-usertaskupdate-function` jobs alongside your own workers — no further configuration needed.
