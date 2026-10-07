@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1v297o7" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.50.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="Process_UserTaskUpdate" name="UserTaskUpdate" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="UserTaskForm_0en57i8">{
+  "type": "checklist",
+  "id": "Field_choice",
+  "key": "choice",
+  "label": "Select options",
+  "values": [
+    { "label": "oneUser", "value": "oneUser" },
+    { "label": "candidateGroups", "value": "candidateGroups" },
+    { "label": "candidateUsers", "value": "candidateUsers" },
+    { "label": "noCandidates", "value": "noCandidates" },
+    { "label": "iterate", "value": "iterate" },
+    { "label": "groupButAssigned", "value": "groupButAssigned" },
+  ]
+}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:UserTaskForm_0en57i8" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_15ijw05</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="User_review" name="Review">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:assignmentDefinition assignee="pierre-yves" />
+        <zeebe:formDefinition externalReference="OneUser" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1yvmp15</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jj7rzu</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_08evw65">
+      <bpmn:incoming>Flow_1jj7rzu</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1jj7rzu" sourceRef="User_review" targetRef="Event_08evw65" />
+    <bpmn:subProcess id="Activity_1t06c62" triggeredByEvent="true">
+      <bpmn:startEvent id="Event_0fo9nfz" name="1h">
+        <bpmn:outgoing>Flow_1j0e58o</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_0akgs8s">
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1H</bpmn:timeDuration>
+        </bpmn:timerEventDefinition>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="Event_056ypom">
+        <bpmn:incoming>Flow_1j0e58o</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1j0e58o" sourceRef="Event_0fo9nfz" targetRef="Event_056ypom" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_15ijw05" sourceRef="StartEvent_1" targetRef="Gateway_119mhtg" />
+    <bpmn:exclusiveGateway id="Gateway_119mhtg" name="Multiple?" default="Flow_1sec4ks">
+      <bpmn:incoming>Flow_15ijw05</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yvmp15</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1sec4ks</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1yvmp15" sourceRef="Gateway_119mhtg" targetRef="User_review">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=1=2</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:boundaryEvent id="Event_0u3sasr" name="1 s" cancelActivity="false" attachedToRef="User_review">
+      <bpmn:outgoing>Flow_1skg487</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_042m5ry">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1skg487" sourceRef="Event_0u3sasr" targetRef="Activity_0swwwha" />
+    <bpmn:endEvent id="Event_0b0fzj9">
+      <bpmn:incoming>Flow_0myamvo</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0myamvo" sourceRef="Activity_0swwwha" targetRef="Event_0b0fzj9" />
+    <bpmn:serviceTask id="Activity_0swwwha" name="Increase Priority" zeebe:modelerTemplate="org.camunda.connector.usertaskupdate.UserTaskUpdateFunction" zeebe:modelerTemplateIcon="data:image/png;base64,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">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="c-usertaskupdate-function" />
+        <zeebe:ioMapping>
+          <zeebe:input source="true" target="allowOverrideAssignee" />
+          <zeebe:input source="true" target="candidateGroupsClear" />
+          <zeebe:input source="quality" target="candidateGroupsValue" />
+          <zeebe:input target="candidateUsersClear" />
+          <zeebe:input target="candidateUsersValue" />
+          <zeebe:input source="true" target="failIfError" />
+          <zeebe:input target="actionValue" />
+          <zeebe:input target="userTaskKey" />
+          <zeebe:input target="processInstanceKey" />
+          <zeebe:input source="User_review" target="filterTaskElementId" />
+          <zeebe:input source="INCREASE" target="priorityOperation" />
+          <zeebe:input source="=10" target="priorityStep" />
+          <zeebe:input source="INCREASE" target="dueDateOperation" />
+          <zeebe:input source="PT10H" target="dueDateStep" />
+          <zeebe:input source="INCREASE" target="followUpDateOperation" />
+          <zeebe:input source="P7D" target="followUpDateStep" />
+          <zeebe:input source="FORCEASSIGN" target="assigneeOperation" />
+          <zeebe:input source="demo" target="assignee" />
+          <zeebe:input source="true" target="updatedUserTasks_optional" />
+          <zeebe:output source="= result.updatedUserTasks" target="reviewIncreasePriority" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="result" />
+          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1skg487</bpmn:incoming>
+      <bpmn:outgoing>Flow_0myamvo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:subProcess id="Activity_1c4aujk">
+      <bpmn:incoming>Flow_1sec4ks</bpmn:incoming>
+      <bpmn:outgoing>Flow_1y4vnk9</bpmn:outgoing>
+      <bpmn:startEvent id="Event_1k0wa6v">
+        <bpmn:outgoing>Flow_1tf106u</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_1tf106u" sourceRef="Event_1k0wa6v" targetRef="Gateway_1kh0s04" />
+      <bpmn:sequenceFlow id="Flow_096af9b" sourceRef="Gateway_1kh0s04" targetRef="User_Quality" />
+      <bpmn:sequenceFlow id="Flow_0mfzkbx" sourceRef="Gateway_1kh0s04" targetRef="User_Planning" />
+      <bpmn:userTask id="User_Quality" name="Quality">
+        <bpmn:extensionElements>
+          <zeebe:userTask />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_096af9b</bpmn:incoming>
+        <bpmn:outgoing>Flow_0gyex7j</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:userTask id="User_Planning" name="Planning">
+        <bpmn:extensionElements>
+          <zeebe:userTask />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0mfzkbx</bpmn:incoming>
+        <bpmn:outgoing>Flow_0wn705o</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:endEvent id="Event_1bbo8qu">
+        <bpmn:incoming>Flow_0gyex7j</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0gyex7j" sourceRef="User_Quality" targetRef="Event_1bbo8qu" />
+      <bpmn:endEvent id="Event_0fg4px8">
+        <bpmn:incoming>Flow_0wn705o</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0wn705o" sourceRef="User_Planning" targetRef="Event_0fg4px8" />
+      <bpmn:parallelGateway id="Gateway_1kh0s04">
+        <bpmn:incoming>Flow_1tf106u</bpmn:incoming>
+        <bpmn:outgoing>Flow_096af9b</bpmn:outgoing>
+        <bpmn:outgoing>Flow_0mfzkbx</bpmn:outgoing>
+      </bpmn:parallelGateway>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_1sec4ks" sourceRef="Gateway_119mhtg" targetRef="Activity_1c4aujk" />
+    <bpmn:boundaryEvent id="Event_1xd5mbt" cancelActivity="false" attachedToRef="Activity_1c4aujk">
+      <bpmn:outgoing>Flow_1h6wfz2</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0va1k7f">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT2S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1h6wfz2" sourceRef="Event_1xd5mbt" targetRef="Activity_1b8inap" />
+    <bpmn:endEvent id="Event_0hy0v2o">
+      <bpmn:incoming>Flow_1p5mzaj</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_1b8inap" name="Increase Priority" zeebe:modelerTemplate="org.camunda.connector.usertaskupdate.UserTaskUpdateFunction" zeebe:modelerTemplateIcon="data:image/png;base64,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">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="c-usertaskupdate-function" />
+        <zeebe:ioMapping>
+          <zeebe:input target="userTaskKey" />
+          <zeebe:input target="processInstanceKey" />
+          <zeebe:input target="filterTaskElementId" />
+          <zeebe:input source="SETLEVEL" target="priorityOperation" />
+          <zeebe:input source="HIGH" target="priorityLevel" />
+          <zeebe:input source="INCREASE" target="dueDateOperation" />
+          <zeebe:input source="P20D" target="dueDateStep" />
+          <zeebe:input source="NOTHING" target="followUpDateOperation" />
+          <zeebe:input source="FORCEASSIGN" target="assigneeOperation" />
+          <zeebe:input source="demo" target="assignee" />
+          <zeebe:input source="ADD" target="candidateGroupsOperation" />
+          <zeebe:input source="supervisor, manager" target="candidateGroupsValue" />
+          <zeebe:input source="ADD" target="candidateUsersOperation" />
+          <zeebe:input source="Paul, Jacques" target="candidateUsersValue" />
+          <zeebe:input source="true" target="updatedUserTasks_optional" />
+          <zeebe:output source="= result.updatedUserTasks" target="groupedTasks" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="result" />
+          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1h6wfz2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1p5mzaj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1p5mzaj" sourceRef="Activity_1b8inap" targetRef="Event_0hy0v2o" />
+    <bpmn:endEvent id="Event_04ntpid">
+      <bpmn:incoming>Flow_1y4vnk9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1y4vnk9" sourceRef="Activity_1c4aujk" targetRef="Event_04ntpid" />
+    <bpmn:boundaryEvent id="Event_04v0ssw" name="60s" cancelActivity="false" attachedToRef="User_review">
+      <bpmn:outgoing>Flow_07483kt</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0snwhqp">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT60S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_07483kt" sourceRef="Event_04v0ssw" targetRef="Activity_1aju27c" />
+    <bpmn:endEvent id="Event_013uk8e">
+      <bpmn:incoming>Flow_00s9k2f</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_00s9k2f" sourceRef="Activity_1aju27c" targetRef="Event_013uk8e" />
+    <bpmn:serviceTask id="Activity_1aju27c" name="Escalate" zeebe:modelerTemplate="org.camunda.connector.usertaskupdate.UserTaskUpdateFunction" zeebe:modelerTemplateIcon="data:image/png;base64,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">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="c-usertaskupdate-function" />
+        <zeebe:ioMapping>
+          <zeebe:input source="true" target="failIfError" />
+          <zeebe:input target="actionValue" />
+          <zeebe:input target="userTaskKey" />
+          <zeebe:input target="processInstanceKey" />
+          <zeebe:input source="User_review" target="filterTaskElementId" />
+          <zeebe:input source="INCREASE" target="priorityOperation" />
+          <zeebe:input source="=1000" target="priorityStep" />
+          <zeebe:input source="INCREASE" target="dueDateOperation" />
+          <zeebe:input source="P3D" target="dueDateStep" />
+          <zeebe:input target="followUpDateOperation" />
+          <zeebe:input source="CLEAR" target="assigneeOperation" />
+          <zeebe:input source="ADD" target="candidateGroupsOperation" />
+          <zeebe:input source="Supervisor,Manager" target="candidateGroupsValue" />
+          <zeebe:input source="NOTHING" target="candidateUsersOperation" />
+          <zeebe:input source="true" target="updatedUserTasks_optional" />
+          <zeebe:output source="= result.updatedUserTasks" target="reviewEscalate" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="result" />
+          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07483kt</bpmn:incoming>
+      <bpmn:outgoing>Flow_00s9k2f</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_UserTaskUpdate">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="162" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_009qe6d_di" bpmnElement="User_review">
+        <dc:Bounds x="550" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_08evw65_di" bpmnElement="Event_08evw65">
+        <dc:Bounds x="722" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0lkiauy_di" bpmnElement="Activity_1t06c62" isExpanded="true">
+        <dc:Bounds x="1130" y="60" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1cfwntq_di" bpmnElement="Event_0fo9nfz">
+        <dc:Bounds x="1170" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1182" y="185" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_056ypom_di" bpmnElement="Event_056ypom">
+        <dc:Bounds x="1262" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1j0e58o_di" bpmnElement="Flow_1j0e58o">
+        <di:waypoint x="1206" y="160" />
+        <di:waypoint x="1262" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Gateway_119mhtg_di" bpmnElement="Gateway_119mhtg" isMarkerVisible="true">
+        <dc:Bounds x="245" y="75" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="297" y="63" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0b0fzj9_di" bpmnElement="Event_0b0fzj9">
+        <dc:Bounds x="802" y="232" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1iose6a_di" bpmnElement="Activity_0swwwha">
+        <dc:Bounds x="620" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1c4aujk_di" bpmnElement="Activity_1c4aujk" isExpanded="true">
+        <dc:Bounds x="425" y="330" width="570" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1k0wa6v_di" bpmnElement="Event_1k0wa6v">
+        <dc:Bounds x="462" y="402" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0smozd9_di" bpmnElement="User_Quality">
+        <dc:Bounds x="670" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vxfh5t_di" bpmnElement="User_Planning">
+        <dc:Bounds x="670" y="490" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1bbo8qu_di" bpmnElement="Event_1bbo8qu">
+        <dc:Bounds x="852" y="402" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0fg4px8_di" bpmnElement="Event_0fg4px8">
+        <dc:Bounds x="852" y="512" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1yfz5fe_di" bpmnElement="Gateway_1kh0s04">
+        <dc:Bounds x="545" y="395" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1tf106u_di" bpmnElement="Flow_1tf106u">
+        <di:waypoint x="498" y="420" />
+        <di:waypoint x="545" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_096af9b_di" bpmnElement="Flow_096af9b">
+        <di:waypoint x="595" y="420" />
+        <di:waypoint x="670" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mfzkbx_di" bpmnElement="Flow_0mfzkbx">
+        <di:waypoint x="570" y="445" />
+        <di:waypoint x="570" y="530" />
+        <di:waypoint x="670" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gyex7j_di" bpmnElement="Flow_0gyex7j">
+        <di:waypoint x="770" y="420" />
+        <di:waypoint x="852" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wn705o_di" bpmnElement="Flow_0wn705o">
+        <di:waypoint x="770" y="530" />
+        <di:waypoint x="852" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0hy0v2o_di" bpmnElement="Event_0hy0v2o">
+        <dc:Bounds x="762" y="692" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0k9vqt8" bpmnElement="Activity_1b8inap">
+        <dc:Bounds x="600" y="670" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04ntpid_di" bpmnElement="Event_04ntpid">
+        <dc:Bounds x="1132" y="462" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_013uk8e_di" bpmnElement="Event_013uk8e">
+        <dc:Bounds x="952" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qu5e1w_di" bpmnElement="Activity_1aju27c">
+        <dc:Bounds x="760" y="140" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0mllb3v_di" bpmnElement="Event_04v0ssw">
+        <dc:Bounds x="632" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="661" y="153" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1eot11o_di" bpmnElement="Event_1xd5mbt">
+        <dc:Bounds x="522" y="612" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0t0i5sy_di" bpmnElement="Event_0u3sasr">
+        <dc:Bounds x="562" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="592" y="153" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1jj7rzu_di" bpmnElement="Flow_1jj7rzu">
+        <di:waypoint x="650" y="100" />
+        <di:waypoint x="722" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15ijw05_di" bpmnElement="Flow_15ijw05">
+        <di:waypoint x="198" y="100" />
+        <di:waypoint x="245" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yvmp15_di" bpmnElement="Flow_1yvmp15">
+        <di:waypoint x="295" y="100" />
+        <di:waypoint x="550" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1skg487_di" bpmnElement="Flow_1skg487">
+        <di:waypoint x="580" y="158" />
+        <di:waypoint x="580" y="250" />
+        <di:waypoint x="620" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0myamvo_di" bpmnElement="Flow_0myamvo">
+        <di:waypoint x="720" y="250" />
+        <di:waypoint x="802" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sec4ks_di" bpmnElement="Flow_1sec4ks">
+        <di:waypoint x="270" y="125" />
+        <di:waypoint x="270" y="430" />
+        <di:waypoint x="425" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1h6wfz2_di" bpmnElement="Flow_1h6wfz2">
+        <di:waypoint x="540" y="648" />
+        <di:waypoint x="540" y="710" />
+        <di:waypoint x="600" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p5mzaj_di" bpmnElement="Flow_1p5mzaj">
+        <di:waypoint x="700" y="710" />
+        <di:waypoint x="762" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y4vnk9_di" bpmnElement="Flow_1y4vnk9">
+        <di:waypoint x="995" y="480" />
+        <di:waypoint x="1132" y="480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07483kt_di" bpmnElement="Flow_07483kt">
+        <di:waypoint x="650" y="158" />
+        <di:waypoint x="650" y="180" />
+        <di:waypoint x="760" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00s9k2f_di" bpmnElement="Flow_00s9k2f">
+        <di:waypoint x="860" y="180" />
+        <di:waypoint x="952" y="180" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

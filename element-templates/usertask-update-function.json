@@ -1,0 +1,609 @@
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "name": "User task update function",
+  "id": "org.camunda.connector.usertaskupdate.UserTaskUpdateFunction",
+  "description": "Update one or several user tasks: priority, due date, follow-up date, assignment (assignee/unassign), candidate groups, candidate users, and a free-text action label.",
+  "documentationRef": "https://docs.camunda.io/docs/components/modeler/web-modeler/connectors/available-connectors/template/",
+  "icon": {
+    "contents": "data:image/png;base64,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\u003d"
+  },
+  "category": {
+    "id": "connectors",
+    "name": "Connectors"
+  },
+  "appliesTo": [
+    "bpmn:Task"
+  ],
+  "elementType": {
+    "value": "bpmn:ServiceTask"
+  },
+  "groups": [
+    {
+      "id": "priority",
+      "label": "Priority"
+    },
+    {
+      "id": "due_date",
+      "label": "Due date"
+    },
+    {
+      "id": "follow-up_date",
+      "label": "Follow-up date"
+    },
+    {
+      "id": "assignment",
+      "label": "Assignment"
+    },
+    {
+      "id": "candidate_groups",
+      "label": "Candidate groups"
+    },
+    {
+      "id": "candidate_users",
+      "label": "Candidate users"
+    },
+    {
+      "id": "Input",
+      "label": "Input"
+    },
+    {
+      "id": "Output",
+      "label": "Output"
+    }
+  ],
+  "properties": [
+    {
+      "binding": {
+        "type": "zeebe:taskDefinition:type"
+      },
+      "type": "Hidden",
+      "value": "c-usertaskupdate-function"
+    },
+    {
+      "binding": {
+        "key": "resultVariable",
+        "type": "zeebe:taskHeader"
+      },
+      "type": "Hidden",
+      "value": "result"
+    },
+    {
+      "id": "userTaskKey",
+      "label": "User task key(s)",
+      "description": "userTaskKey or List\u003cuserTaskKey\u003e. Update exactly these user tasks. Takes precedence over processInstanceKey/filterTaskElementId: when set, no search is performed.",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+        "name": "userTaskKey",
+        "type": "zeebe:input"
+      },
+      "group": "Input"
+    },
+    {
+      "id": "processInstanceKey",
+      "label": "Process instance key",
+      "description": "Search the active (CREATED) user tasks of this process instance and update them. When not set (and userTaskKey is not set), the current process instance is used. Ignored when userTaskKey is set.",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+        "name": "processInstanceKey",
+        "type": "zeebe:input"
+      },
+      "group": "Input"
+    },
+    {
+      "id": "filterTaskElementId",
+      "label": "Filter task element id(s)",
+      "description": "TaskElementId or List\u003cTaskElementId\u003e. When searching by processInstanceKey, only update these task ids (user task element id). Leave empty to update every active user task found. Ignored when userTaskKey is set.",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+        "name": "filterTaskElementId",
+        "type": "zeebe:input"
+      },
+      "group": "Input"
+    },
+    {
+      "id": "priorityOperation",
+      "label": "Priority: operation",
+      "description": "NOTHING (default) leaves the priority untouched. INCREASE/DECREASE the current priority by priorityStep, set it to an ABSOLUTE value, set it from priorityLevel (SETLEVEL), or CLEAR it back to the default (50).",
+      "value": "NOTHING",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Nothing",
+          "value": "NOTHING"
+        },
+        {
+          "name": "Increase",
+          "value": "INCREASE"
+        },
+        {
+          "name": "Decrease",
+          "value": "DECREASE"
+        },
+        {
+          "name": "Absolute",
+          "value": "ABSOLUTE"
+        },
+        {
+          "name": "Set level",
+          "value": "SETLEVEL"
+        },
+        {
+          "name": "Clear",
+          "value": "CLEAR"
+        }
+      ],
+      "binding": {
+        "name": "priorityOperation",
+        "type": "zeebe:input"
+      },
+      "group": "priority"
+    },
+    {
+      "condition": {
+        "property": "priorityOperation",
+        "oneOf": [
+          "INCREASE",
+          "DECREASE"
+        ]
+      },
+      "id": "priorityStep",
+      "label": "Priority: step",
+      "description": "Step used with priorityOperation\u003dINCREASE/DECREASE to move the current priority. The result is clamped to [0, 100].",
+      "value": "10",
+      "type": "Number",
+      "feel": "optional",
+      "binding": {
+        "name": "priorityStep",
+        "type": "zeebe:input"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "priority"
+    },
+    {
+      "condition": {
+        "property": "priorityOperation",
+        "oneOf": [
+          "ABSOLUTE"
+        ]
+      },
+      "id": "priorityAbsoluteValue",
+      "label": "Priority: absolute value",
+      "description": "Used with priorityOperation\u003dABSOLUTE: the new priority (0-100).",
+      "type": "Number",
+      "feel": "optional",
+      "binding": {
+        "name": "priorityAbsoluteValue",
+        "type": "zeebe:input"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "priority"
+    },
+    {
+      "condition": {
+        "property": "priorityOperation",
+        "oneOf": [
+          "SETLEVEL"
+        ]
+      },
+      "id": "priorityLevel",
+      "label": "Priority: level",
+      "description": "Used with priorityOperation\u003dSETLEVEL: sets the priority to the value matching this Tasklist priority band (Low\u003d25, Medium\u003d50, High\u003d75, Critical\u003d100).",
+      "value": "HIGH",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Low",
+          "value": "LOW"
+        },
+        {
+          "name": "Medium",
+          "value": "MEDIUM"
+        },
+        {
+          "name": "High",
+          "value": "HIGH"
+        },
+        {
+          "name": "Critical",
+          "value": "CRITICAL"
+        }
+      ],
+      "binding": {
+        "name": "priorityLevel",
+        "type": "zeebe:input"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "priority"
+    },
+    {
+      "id": "dueDateOperation",
+      "label": "Due date: operation",
+      "description": "NOTHING (default) leaves the due date untouched. INCREASE/DECREASE the current due date by dueDateStep, set it to an ABSOLUTE value, or CLEAR it (no date).",
+      "value": "NOTHING",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Nothing",
+          "value": "NOTHING"
+        },
+        {
+          "name": "Increase",
+          "value": "INCREASE"
+        },
+        {
+          "name": "Decrease",
+          "value": "DECREASE"
+        },
+        {
+          "name": "Absolute",
+          "value": "ABSOLUTE"
+        },
+        {
+          "name": "Clear",
+          "value": "CLEAR"
+        }
+      ],
+      "binding": {
+        "name": "dueDateOperation",
+        "type": "zeebe:input"
+      },
+      "group": "due_date"
+    },
+    {
+      "condition": {
+        "property": "dueDateOperation",
+        "oneOf": [
+          "INCREASE",
+          "DECREASE"
+        ]
+      },
+      "id": "dueDateStep",
+      "label": "Due date: step",
+      "description": "Used with dueDateOperation\u003dINCREASE/DECREASE: an ISO-8601 duration (e.g. PT2H, P1D) added to or removed from the current due date. If the task has no due date yet, now() is used as the base.",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+        "name": "dueDateStep",
+        "type": "zeebe:input"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "due_date"
+    },
+    {
+      "condition": {
+        "property": "dueDateOperation",
+        "oneOf": [
+          "ABSOLUTE"
+        ]
+      },
+      "id": "dueDateAbsoluteValue",
+      "label": "Due date: absolute value",
+      "description": "Used with dueDateOperation\u003dABSOLUTE: the new due date (ISO-8601 date-time, e.g. 2026-12-31T23:59:00Z).",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+        "name": "dueDateAbsoluteValue",
+        "type": "zeebe:input"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "due_date"
+    },
+    {
+      "id": "followUpDateOperation",
+      "label": "Follow-up date: operation",
+      "description": "NOTHING (default) leaves the follow-up date untouched. INCREASE/DECREASE the current follow-up date by followUpDateStep, set it to an ABSOLUTE value, or CLEAR it (no date).",
+      "value": "NOTHING",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Nothing",
+          "value": "NOTHING"
+        },
+        {
+          "name": "Increase",
+          "value": "INCREASE"
+        },
+        {
+          "name": "Decrease",
+          "value": "DECREASE"
+        },
+        {
+          "name": "Absolute",
+          "value": "ABSOLUTE"
+        },
+        {
+          "name": "Clear",
+          "value": "CLEAR"
+        }
+      ],
+      "binding": {
+        "name": "followUpDateOperation",
+        "type": "zeebe:input"
+      },
+      "group": "follow-up_date"
+    },
+    {
+      "condition": {
+        "property": "followUpDateOperation",
+        "oneOf": [
+          "INCREASE",
+          "DECREASE"
+        ]
+      },
+      "id": "followUpDateStep",
+      "label": "Follow-up date: step",
+      "description": "Used with followUpDateOperation\u003dINCREASE/DECREASE: an ISO-8601 duration (e.g. PT2H, P1D) added to or removed from the current follow-up date. If the task has no follow-up date yet, now() is used as the base.",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+        "name": "followUpDateStep",
+        "type": "zeebe:input"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "follow-up_date"
+    },
+    {
+      "condition": {
+        "property": "followUpDateOperation",
+        "oneOf": [
+          "ABSOLUTE"
+        ]
+      },
+      "id": "followUpDateAbsoluteValue",
+      "label": "Follow-up date: absolute value",
+      "description": "Used with followUpDateOperation\u003dABSOLUTE: the new follow-up date (ISO-8601 date-time).",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+        "name": "followUpDateAbsoluteValue",
+        "type": "zeebe:input"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "follow-up_date"
+    },
+    {
+      "id": "assigneeOperation",
+      "label": "Assignment: operation",
+      "description": "NOTHING (default) leaves the assignment untouched. FORCEASSIGN sets assignee unconditionally; ASSIGN sets it only if the task is not already assigned; CLEAR unassigns the task.",
+      "value": "NOTHING",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Nothing",
+          "value": "NOTHING"
+        },
+        {
+          "name": "Force assign",
+          "value": "FORCEASSIGN"
+        },
+        {
+          "name": "Assign if not assigned",
+          "value": "ASSIGN"
+        },
+        {
+          "name": "Unassign",
+          "value": "CLEAR"
+        }
+      ],
+      "binding": {
+        "name": "assigneeOperation",
+        "type": "zeebe:input"
+      },
+      "group": "assignment"
+    },
+    {
+      "condition": {
+        "property": "assigneeOperation",
+        "oneOf": [
+          "FORCEASSIGN",
+          "ASSIGN"
+        ]
+      },
+      "id": "assignee",
+      "label": "Assignee",
+      "description": "Used with assigneeOperation\u003dFORCEASSIGN/ASSIGN: set this user as the assignee of the task.",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+        "name": "assignee",
+        "type": "zeebe:input"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "assignment"
+    },
+    {
+      "id": "candidateGroupsOperation",
+      "label": "Candidate groups: operation",
+      "description": "NOTHING (default) leaves candidate groups untouched. FORCEASSIGN sets candidateGroupsValue unconditionally; ASSIGN sets it only if the task has no candidate group yet; CLEAR removes every candidate group; ADD/REMOVE add or remove candidateGroupsValue from the task\u0027s current candidate groups.",
+      "value": "NOTHING",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Nothing",
+          "value": "NOTHING"
+        },
+        {
+          "name": "Force assign",
+          "value": "FORCEASSIGN"
+        },
+        {
+          "name": "Assign if not assigned",
+          "value": "ASSIGN"
+        },
+        {
+          "name": "Clear",
+          "value": "CLEAR"
+        },
+        {
+          "name": "Add",
+          "value": "ADD"
+        },
+        {
+          "name": "Remove",
+          "value": "REMOVE"
+        }
+      ],
+      "binding": {
+        "name": "candidateGroupsOperation",
+        "type": "zeebe:input"
+      },
+      "group": "candidate_groups"
+    },
+    {
+      "condition": {
+        "property": "candidateGroupsOperation",
+        "oneOf": [
+          "FORCEASSIGN",
+          "ASSIGN",
+          "ADD",
+          "REMOVE"
+        ]
+      },
+      "id": "candidateGroupsValue",
+      "label": "Candidate groups: value",
+      "description": "Used with candidateGroupsOperation\u003dFORCEASSIGN/ASSIGN/ADD/REMOVE. Input is a String of GroupId, separated by comma, or a List of GroupId (String).",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+        "name": "candidateGroupsValue",
+        "type": "zeebe:input"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "candidate_groups"
+    },
+    {
+      "id": "candidateUsersOperation",
+      "label": "Candidate users: operation",
+      "description": "NOTHING (default) leaves candidate users untouched. FORCEASSIGN sets candidateUsersValue unconditionally; ASSIGN sets it only if the task has no candidate user yet; CLEAR removes every candidate user; ADD/REMOVE add or remove candidateUsersValue from the task\u0027s current candidate users.",
+      "value": "NOTHING",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Nothing",
+          "value": "NOTHING"
+        },
+        {
+          "name": "Force assign",
+          "value": "FORCEASSIGN"
+        },
+        {
+          "name": "Assign if not assigned",
+          "value": "ASSIGN"
+        },
+        {
+          "name": "Clear",
+          "value": "CLEAR"
+        },
+        {
+          "name": "Add",
+          "value": "ADD"
+        },
+        {
+          "name": "Remove",
+          "value": "REMOVE"
+        }
+      ],
+      "binding": {
+        "name": "candidateUsersOperation",
+        "type": "zeebe:input"
+      },
+      "group": "candidate_users"
+    },
+    {
+      "condition": {
+        "property": "candidateUsersOperation",
+        "oneOf": [
+          "FORCEASSIGN",
+          "ASSIGN",
+          "ADD",
+          "REMOVE"
+        ]
+      },
+      "id": "candidateUsersValue",
+      "label": "Candidate users: value",
+      "description": "Used with candidateUsersOperation\u003dFORCEASSIGN/ASSIGN/ADD/REMOVE. Input is a String of UserName, separated by comma, or a List of UserName (String).",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+        "name": "candidateUsersValue",
+        "type": "zeebe:input"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "candidate_users"
+    },
+    {
+      "id": "updatedUserTasks_optional",
+      "label": "Saved Updated user tasks?",
+      "description": "List, one record per updated user task, with the userTaskKey/elementId/processInstanceKey and the resulting value of each operation that was applied on it (priority, dueDate, followUpDate, assignee, candidateGroups, candidateUsers, action).",
+      "value": "false",
+      "binding": {
+        "name": "updatedUserTasks_optional",
+        "type": "zeebe:input"
+      },
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "group": "Output"
+    },
+    {
+      "condition": {
+        "property": "updatedUserTasks_optional",
+        "equals": "true"
+      },
+      "id": "updatedUserTasks",
+      "label": "Updated user tasks",
+      "description": "List, one record per updated user task, with the userTaskKey/elementId/processInstanceKey and the resulting value of each operation that was applied on it (priority, dueDate, followUpDate, assignee, candidateGroups, candidateUsers, action).",
+      "type": "String",
+      "feel": "optional",
+      "binding": {
+        "source": "\u003d result.updatedUserTasks",
+        "type": "zeebe:output"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "Output"
+    },
+    {
+      "label": "ControllerPage Expression",
+      "description": "Expression to define BPMN Errors to throw",
+      "type": "Hidden",
+      "value": "if is defined(error) then bpmnError(error.code, error.message) else null",
+      "binding": {
+        "key": "errorExpression",
+        "type": "zeebe:taskHeader"
+      }
+    }
+  ]
+}
