@@ -146,7 +146,7 @@
             <dependency>
                 <groupId>io.camunda</groupId>
                 <artifactId>camunda-bom</artifactId>
-                <version>8.9.23</version>
+                <version>8.10.1</version>
                 <scope>import</scope>
             </dependency>
         </dependencies>
