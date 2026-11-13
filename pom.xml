@@ -128,7 +128,7 @@
         <dependency>
             <groupId>io.camunda.community</groupId>
             <artifactId>zeebe-cherry-runtime</artifactId>
-            <version>3.5.2</version>
+            <version>4.1.2</version>
             <scope>test</scope>
         </dependency>
 
